@@ -11,26 +11,55 @@ module.exports = NodeHelper.create({
 
     start: function () {
         console.log('MMM-FAA-Delay helper started ...');
+        this.type = '';
+        this.image = '';
+        this.message = '';
+        this.weather = '';
         },
 
   getAirportData: function(api_url) {
-    var self = this;
+    var that = this;
 
     request({url: api_url, method: 'GET'}, function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var trafficComparison = 0;
-        if (JSON.parse(body).routes[0].legs[0].duration_in_traffic) {
-          var commute = JSON.parse(body).routes[0].legs[0].duration_in_traffic.text;
-          var noTrafficValue = JSON.parse(body).routes[0].legs[0].duration.value;
-          var withTrafficValue = JSON.parse(body).routes[0].legs[0].duration_in_traffic.value;
-          trafficComparison = parseInt(withTrafficValue)/parseInt(noTrafficValue);
+        error;
+
+        if (!error && response.statusCode == 200) {
+            if (response.delay) {
+                that.type = response.status.type;
+
+                switch (that.type) {
+                    case 'Airport Closure':
+                        that.message = 'Airport closed due to ' + response.status.reason + ', expected reopening ' + response.status.ClosureEnd;
+                        break;
+                    case 'Ground Stops':
+                        that.message = 'Ground stoppage due to ' + response.status.reason + ', expected end is ' +  response.status.EndTime;
+                        break;
+                    case 'Ground Delay':
+                        that.message = 'Ground delay due to ' + response.status.reason + ', average delay is ' +  response.status.AvgDelay;
+                        break;
+                    default:
+                        that.message = 'Delay due to ' + response.status.reason + ', delays are from ' +  response.status.MinDelay + ' to ' +  response.status.MaxDelay + ', and ' + response.status.Trend;
+                        break;
+                    }
+            } else {
+                that.type = 'Ok';
+                that.message = 'No reported delays.';
+                }
+
+            that.weather = response.weather.weather + ', temp ' + response.weather.temp + ', wind ' + response.weather.weather + ', visibility ' + response.weather.visibility;
+
+        } else if (error && response.statusCode == 502) {
+            that.type = 'No Data';
+            that.message = 'FAA system down.';
+            that.weather = 'No weather data.';
         } else {
-          var commute = JSON.parse(body).routes[0].legs[0].duration.text;
-        }
-        var summary = JSON.parse(body).routes[0].summary;
-        self.sendSocketNotification('GOT-FAA-DATA', {'commute':commute, 'url':api_url, 'trafficComparison': trafficComparison, 'summary':summary});
-      }
-    });
+            that.type = 'Error';
+            that.message = 'Error requesting data.';
+            that.weather = 'No weather data.';
+            }
+        });
+
+    this.sendSocketNotification('GOT-FAA-DATA', {'type': this.type , 'message': this.message, 'weather': this.weather});
   },
 
 
