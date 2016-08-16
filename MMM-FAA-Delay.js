@@ -19,11 +19,14 @@ Module.register('MMM-FAA-Delay'),{
 
         this.loaded = false;
         this.url = 'http://services.faa.gov/airport/status/' + this.config.airport + '?format=application/json';
+        this.type = '';
+        this.message = '';
+        this.weather = '';
 
-        this.getAirportDeta(this);
+        this.getAirportData(this);
         },
 
-    this.getAirportDeta(that) {
+    this.getAirportData(that) {
         that.sendSocketNotification('GET-FAA-DATA', that.url);
         setTimeout(that.getAirportData, that.config.interval, that);
         },
@@ -34,7 +37,7 @@ Module.register('MMM-FAA-Delay'),{
         if (!this.loaded) {
             wrapper.innerHTML = 'Loading aiport data...';
         } else {
-            wrapper.innerHTML = 'Got data for ' + this.config.airport;
+            wrapper.innerHTML = this.config.airport + ', ' + this.message;
         }
 
         return wrapper;
@@ -42,8 +45,10 @@ Module.register('MMM-FAA-Delay'),{
 
     socketNotificationReceived: function(notification, payload) {
         if (notification === 'GOT-FAA-DELAY' && payload.url === this.url) {
-            
                 this.loaded = true;
+                this.type = payload.type;
+                this.message = payload.message;
+                this.weather = payload.weather;
                 this.updateDom(1000);
             }
         }

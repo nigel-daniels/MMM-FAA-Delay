@@ -12,12 +12,15 @@ module.exports = NodeHelper.create({
     start: function () {
         console.log('MMM-FAA-Delay helper started ...');
         this.type = '';
+        this.url = '';
         this.image = '';
         this.message = '';
         this.weather = '';
         },
 
   getAirportData: function(api_url) {
+    this.url = api_url;
+
     var that = this;
 
     request({url: api_url, method: 'GET'}, function(error, response, body) {
@@ -59,7 +62,7 @@ module.exports = NodeHelper.create({
             }
         });
 
-    this.sendSocketNotification('GOT-FAA-DATA', {'type': this.type , 'message': this.message, 'weather': this.weather});
+    this.sendSocketNotification('GOT-FAA-DATA', {'url': this.url, 'type': this.type , 'message': this.message, 'weather': this.weather});
   },
 
 
