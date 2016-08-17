@@ -34,16 +34,16 @@ module.exports = NodeHelper.create({
 
                 switch (that.type) {
                     case 'Airport Closure':
-                        that.message = 'Airport closed due to ' + result.status.reason + ', expected reopening ' + result.status.ClosureEnd;
+                        that.message = 'Airport closed due to ' + result.status.reason + ', expected reopening ' + result.status.closureEnd + '.';
                         break;
-                    case 'Ground Stops':
-                        that.message = 'Ground stoppage due to ' + result.status.reason + ', expected end is ' +  result.status.EndTime;
+                    case 'Ground Stop':
+                        that.message = 'Ground stoppage due to ' + result.status.reason + ', expected end is ' +  result.status.endTime + '.';
                         break;
                     case 'Ground Delay':
-                        that.message = 'Ground delay due to ' + result.status.reason + ', average delay is ' +  result.status.AvgDelay;
+                        that.message = 'Ground delay due to ' + result.status.reason + ', average delay is ' +  result.status.avgDelay + '.';
                         break;
                     default:
-                        that.message = 'Delay due to ' + result.status.reason + ', delays are from ' +  result.status.MinDelay + ' to ' +  result.status.MaxDelay + ', and ' + result.status.Trend;
+                        that.message = 'Delay due to ' + result.status.reason + ', delays are from ' +  result.status.minDelay + ' to ' +  result.status.maxDelay + ', and ' + result.status.trend + '.';
                         break;
                     }
             } else {
@@ -51,7 +51,7 @@ module.exports = NodeHelper.create({
                 that.message = result.status.reason;
                 }
 
-            that.weather = result.weather.weather + ', temp ' + result.weather.temp + ', wind ' + result.weather.wind + ', visibility ' + result.weather.visibility;
+            that.weather = result.weather.weather + ', temp ' + result.weather.temp + ', wind ' + result.weather.wind + ', visibility ' + result.weather.visibility + '.';
 
         } else if (error && response.statusCode == 502) {
             that.type = 'No Data';

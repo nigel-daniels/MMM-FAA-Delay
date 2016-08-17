@@ -7,3 +7,11 @@
 .airport .code {
     padding-right: 10px;
 }
+
+.airport .message {
+    max-width: 400px;
+}
+
+.airport .weather {
+    max-width: 400px;
+}
