@@ -1,4 +1,7 @@
-/*
+/* Magic Mirror Module: MMM-FAA-Delay
+ *
+ * By Nigel Daniels https://github.com/nigel-daniels/
+ * MIT Licensed.
  */
 
 Module.register('MMM-FAA-Delay', {
@@ -14,12 +17,14 @@ Module.register('MMM-FAA-Delay', {
             this.data.classes = 'bright medium';
             }
 
+        // Set up the local values, here we construct the request url to use
         this.loaded = false;
         this.url = 'http://services.faa.gov/airport/status/' + this.config.airport + '?format=application/json';
         this.type = '';
         this.message = '';
         this.weather = '';
 
+        // Trigger the first request
         this.getAirportData(this);
         },
 
@@ -28,15 +33,16 @@ Module.register('MMM-FAA-Delay', {
         },
 
     getAirportData: function(that) {
-        //Log.log(this.name + ': getAirportData, called');
+        // Make the initial request to the helper then set up the timer to perform the updates
         that.sendSocketNotification('GET-FAA-DATA', that.url);
         setTimeout(that.getAirportData, that.config.interval, that);
         },
 
     getDom: function() {
-        //Log.log(this.name + ': getDom, called');
+        // Set up the local wrapper
         var wrapper = null;
 
+        // If we have some data to display then build the results table
         if (this.loaded) {
             wrapper = document.createElement("table");
 		    wrapper.className = "airport small";
@@ -82,6 +88,7 @@ Module.register('MMM-FAA-Delay', {
             wrapper.appendChild(messageRow);
             wrapper.appendChild(weatherRow);
         } else {
+            // Otherwise lets just use a simple div
             wrapper = document.createElement('div');
             wrapper.innerHTML = 'Loading airport data...';
             }
@@ -90,10 +97,9 @@ Module.register('MMM-FAA-Delay', {
         },
 
     socketNotificationReceived: function(notification, payload) {
-        //Log.log(this.name + ': socketNotificationReceived, called');
-        //Log.log(this.name + ': socketNotificationReceived, notification: ' + notification);
-        //Log.log(this.name + ': socketNotificationReceived, payload: ' + JSON.stringify(payload));
+        // check to see if the response was for us and used the same url
         if (notification === 'GOT-FAA-DATA' && payload.url === this.url) {
+                // we got some data so set the flag, stash the data to display then request the dom update
                 this.loaded = true;
                 this.type = payload.type;
                 this.message = payload.message;
