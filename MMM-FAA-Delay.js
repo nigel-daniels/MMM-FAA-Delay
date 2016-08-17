@@ -1,5 +1,6 @@
 /* Magic Mirror Module: MMM-FAA-Delay
- *
+ * Version: 1.0.0
+ * 
  * By Nigel Daniels https://github.com/nigel-daniels/
  * MIT Licensed.
  */
