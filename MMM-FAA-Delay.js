@@ -4,15 +4,15 @@
  * MIT Licensed.
  */
 
-Module.register('MMM-FAA-Delay'),{
+Module.register('MMM-FAA-Delay', {
     defaults: {
             airport:    'SJC',  // Supported IATA codes are here: http://www.fly.faa.gov/flyfaa/usmap.jsp
-            max:        true,   // Use the max delay time
             interval:   900000  // 15 minutes
         },
 
     start:  function() {
-        Log.info('Starting module: ' + this.name);
+        console.log('Starting module: ' + this.name);
+
         if (this.data.classes === 'MMM-FAA-Delay') {
             this.data.classes = 'bright medium';
             }
@@ -26,25 +26,30 @@ Module.register('MMM-FAA-Delay'),{
         this.getAirportData(this);
         },
 
-    this.getAirportData(that) {
+    getAirportData: function(that) {
+        console.log(this.name + ': getAirportData, called');
         that.sendSocketNotification('GET-FAA-DATA', that.url);
         setTimeout(that.getAirportData, that.config.interval, that);
         },
 
     getDom: function() {
+        console.log(this.name + ': getDom, called');
         var wrapper = document.createElement('div');
 
         if (!this.loaded) {
-            wrapper.innerHTML = 'Loading aiport data...';
+            wrapper.innerHTML = 'Loading airport data...';
         } else {
             wrapper.innerHTML = this.config.airport + ', ' + this.message;
-        }
+            }
 
         return wrapper;
         },
 
     socketNotificationReceived: function(notification, payload) {
-        if (notification === 'GOT-FAA-DELAY' && payload.url === this.url) {
+        console.log(this.name + ': socketNotificationReceived, called');
+        console.log(this.name + ': socketNotificationReceived, notification: ' + notification);
+        console.log(this.name + ': socketNotificationReceived, payload: ' + JSON.stringify(payload));
+        if (notification === 'GOT-FAA-DATA' && payload.url === this.url) {
                 this.loaded = true;
                 this.type = payload.type;
                 this.message = payload.message;

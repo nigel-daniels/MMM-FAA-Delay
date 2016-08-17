@@ -10,7 +10,7 @@ var request = require('request');
 module.exports = NodeHelper.create({
 
     start: function () {
-        console.log('MMM-FAA-Delay helper started ...');
+        console.log('MMM-FAA-Delay helper, start, called.');
         this.type = '';
         this.url = '';
         this.image = '';
@@ -19,37 +19,39 @@ module.exports = NodeHelper.create({
         },
 
   getAirportData: function(api_url) {
+    //console.log('MMM-FAA-Delay helper, getAirportData, called.');
     this.url = api_url;
 
     var that = this;
 
     request({url: api_url, method: 'GET'}, function(error, response, body) {
-        error;
+
+        var result = JSON.parse(body);
 
         if (!error && response.statusCode == 200) {
-            if (response.delay) {
-                that.type = response.status.type;
+            if (result.delay  == 'true') {
+                that.type = result.status.type;
 
                 switch (that.type) {
                     case 'Airport Closure':
-                        that.message = 'Airport closed due to ' + response.status.reason + ', expected reopening ' + response.status.ClosureEnd;
+                        that.message = 'Airport closed due to ' + result.status.reason + ', expected reopening ' + result.status.ClosureEnd;
                         break;
                     case 'Ground Stops':
-                        that.message = 'Ground stoppage due to ' + response.status.reason + ', expected end is ' +  response.status.EndTime;
+                        that.message = 'Ground stoppage due to ' + result.status.reason + ', expected end is ' +  result.status.EndTime;
                         break;
                     case 'Ground Delay':
-                        that.message = 'Ground delay due to ' + response.status.reason + ', average delay is ' +  response.status.AvgDelay;
+                        that.message = 'Ground delay due to ' + result.status.reason + ', average delay is ' +  result.status.AvgDelay;
                         break;
                     default:
-                        that.message = 'Delay due to ' + response.status.reason + ', delays are from ' +  response.status.MinDelay + ' to ' +  response.status.MaxDelay + ', and ' + response.status.Trend;
+                        that.message = 'Delay due to ' + result.status.reason + ', delays are from ' +  result.status.MinDelay + ' to ' +  result.status.MaxDelay + ', and ' + result.status.Trend;
                         break;
                     }
             } else {
                 that.type = 'Ok';
-                that.message = 'No reported delays.';
+                that.message = result.status.reason;
                 }
 
-            that.weather = response.weather.weather + ', temp ' + response.weather.temp + ', wind ' + response.weather.weather + ', visibility ' + response.weather.visibility;
+            that.weather = result.weather.weather + ', temp ' + result.weather.temp + ', wind ' + result.weather.wind + ', visibility ' + result.weather.visibility;
 
         } else if (error && response.statusCode == 502) {
             that.type = 'No Data';
@@ -60,17 +62,18 @@ module.exports = NodeHelper.create({
             that.message = 'Error requesting data.';
             that.weather = 'No weather data.';
             }
+
+        that.sendSocketNotification('GOT-FAA-DATA', {'url': that.url, 'type': that.type , 'message': that.message, 'weather': that.weather});
         });
-
-    this.sendSocketNotification('GOT-FAA-DATA', {'url': this.url, 'type': this.type , 'message': this.message, 'weather': this.weather});
-  },
+    },
 
 
-  //Subclass socketNotificationReceived received.
-  socketNotificationReceived: function(notification, payload) {
-    if (notification === 'GET-FAA-DATA') {
-      this.getAirportData(payload);
-    }
-  }
+    //Subclass socketNotificationReceived received.
+    socketNotificationReceived: function(notification, payload) {
+        //console.log('MMM-FAA-Delay helper, socketNotificationReceived, called.');
+        if (notification === 'GET-FAA-DATA') {
+            this.getAirportData(payload);
+            }
+        }
 
-});
+    });

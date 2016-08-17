@@ -21,5 +21,6 @@
   },
   "homepage": "https://github.com/nigel-daniels/MMM-FAA-Delay#readme",
   "dependencies": {
+      "request": "latest"
     }
 }
