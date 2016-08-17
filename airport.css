@@ -3,4 +3,7 @@
  * By Nigel Daniels https://github.com/nigel-daniels/
  * MIT Licensed.
  */
- 
+
+.airport .code {
+    padding-right: 10px;
+}
