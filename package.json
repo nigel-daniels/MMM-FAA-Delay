@@ -1,26 +1,26 @@
 {
-  "name": "Magic-Mirror-Module-FAA-Airport-Delays",
-  "version": "1.0.0",
-  "description": "MM2 Module to show FAA published delays at major US airports.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nigel-daniels/MMM-FAA-Delay"
-  },
-  "keywords": [
-    "magic mirror",
-    "smart mirror",
-    "faa",
-    "airports",
-    "module"
-  ],
-  "author": "Nigel Daniels",
-  "contributors": "https://github.com/nigel-daniels/MMM-FAA-Delay/graphs/contributors",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nigel-daniels/MMM-FAA-Delay/issues"
-  },
-  "homepage": "https://github.com/nigel-daniels/MMM-FAA-Delay#readme",
-  "dependencies": {
-      "request": "latest"
-    }
+    "name":         "MMM-FAA-Delay",
+    "version":      "1.0.0",
+    "description":  "MagicMirror 2 module to show FAA published delays at major US airports.",
+    "repository":   {
+                    "type": "git",
+                    "url":  "git+https://github.com/nigel-daniels/MMM-FAA-Delay"
+                    },
+    "keywords":     [
+                    "magic mirror",
+                    "smart mirror",
+                    "faa",
+                    "airports",
+                    "module"
+                    ],
+    "author":       "Nigel Daniels",
+    "contributors": "https://github.com/nigel-daniels/MMM-FAA-Delay/graphs/contributors",
+    "license":      "MIT",
+    "bugs":         {
+                    "url": "https://github.com/nigel-daniels/MMM-FAA-Delay/issues"
+                    },
+    "homepage":     "https://github.com/nigel-daniels/MMM-FAA-Delay#readme",
+    "dependencies": {
+                    "request":  "latest"
+                    }
 }
