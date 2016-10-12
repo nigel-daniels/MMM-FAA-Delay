@@ -10,8 +10,8 @@ The entry in `config.js` can include the following options:
 
 |Option|Description|
 |---|---|
-|`airport`|This is the airport you want to monitor for delays.  Use the airports IATA code.  The FAA supported IATA codes can be found here: http://www.fly.faa.gov/flyfaa/usmap.jsp<br><br>**Type:** `string`<br>**Default Value:** `SJC`|
 |`interval`|How often the traffic is updated.<br><br>**Type:** `integer`<br>**Default value:** `900000 // 15 minutes`|
+|`airports`|**Required** This is a list of airports you want to monitor for delays.  Use the airports International Air Transport Association (IATA) code.  The FAA supported IATA codes can be found here: http://www.fly.faa.gov/flyfaa/usmap.jsp<br><br>**Type:** `string`|
 
 Here is an example of an entry in `config.js`
 ```
@@ -21,8 +21,8 @@ Here is an example of an entry in `config.js`
     classes:	'dimmed medium',
     header:		'Airport Delays',
     config:		{
-                airport:	'SFO',
-                interval:	300000  // 5 min updates
+                interval:	300000,  // 5 min updates
+                airports:	['SFO', 'SJC']
                 }
 },
 ```
