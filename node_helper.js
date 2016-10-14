@@ -12,28 +12,24 @@ module.exports = NodeHelper.create({
 
     start: function () {
         console.log('MMM-FAA-Delay helper, started...');
-
-        // Set up the local values
-        this.urls = [];
-        this.results = [];
         },
 
 
     getAirportData: function(payload) {
         // The payload should be the request url we want to use
-        this.urls = payload;
-        this.results = [];
+        var urls = payload;
+        var results = [];
         this.count = 0;
 
         var that = this;
 
-        for (var i = 0; i < this.urls.length; i++)
+        for (var i = 0; i < urls.length; i++)
             {
-            request({url: this.urls[i].url, method: 'GET'}, function(error, response, body) {
+            request({url: urls[i].url, method: 'GET'}, function(error, response, body) {
                 // Lets convert the body into JSON
                 var result = JSON.parse(body);
                 var faaResult = {
-                            code:       that.urls[that.count].code,
+                            code:       urls[that.count].code,
                             type:       '',
                             message:    '',
                             weather:    ''
@@ -82,13 +78,13 @@ module.exports = NodeHelper.create({
                     faaResult.weather = 'No weather data.';
                     }
 
-                that.results.push(faaResult);
+                results.push(faaResult);
                 that.count++;
 
-                if (that.count === that.urls.length)
+                if (that.count === urls.length)
                     {
                     // We have the responses figured out so lets fire off the notifiction
-                    that.sendSocketNotification('GOT-FAA-DATA', that.results);
+                    that.sendSocketNotification('GOT-FAA-DATA', results);
                     }
                 });
             }
