@@ -26,10 +26,9 @@ module.exports = NodeHelper.create({
         this.count = 0;
 
         var that = this;
-        
+
         for (var i = 0; i < this.urls.length; i++)
             {
-            this.code = this;
             request({url: this.urls[i].url, method: 'GET'}, function(error, response, body) {
                 // Lets convert the body into JSON
                 var result = JSON.parse(body);
