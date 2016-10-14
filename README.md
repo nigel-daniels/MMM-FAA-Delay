@@ -17,8 +17,7 @@ Here is an example of an entry in `config.js`
 ```
 {
     module:		'MMM-FAA-Delay',
-    position:	'top_left',
-    classes:	'dimmed medium',
+    position:		'top_left',
     header:		'Airport Delays',
     config:		{
                 interval:	300000,  // 5 min updates
