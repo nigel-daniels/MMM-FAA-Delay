@@ -28,8 +28,11 @@ module.exports = NodeHelper.create({
             request({url: urls[i].url, method: 'GET'}, function(error, response, body) {
                 // Lets convert the body into JSON
                 var result = JSON.parse(body);
+                var path = response.request.uri.pathname;
+                var code = path.substring(path.lastIndexOf('/') + 1, path.length);
+
                 var faaResult = {
-                            code:       urls[that.count].code,
+                            code:       code,
                             type:       '',
                             message:    '',
                             weather:    ''

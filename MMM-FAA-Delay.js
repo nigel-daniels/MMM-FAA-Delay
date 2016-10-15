@@ -113,7 +113,6 @@ Module.register('MMM-FAA-Delay', {
                 // we got some data so set the flag, stash the data to display then request the dom update
                 this.loaded = true;
                 this.results = payload;
-                
                 this.updateDom(1000);
             }
         }
