@@ -25,70 +25,74 @@ module.exports = NodeHelper.create({
 
         for (var i = 0; i < urls.length; i++)
             {
-            request({url: urls[i].url, method: 'GET'}, function(error, response, body) {
-                // Lets convert the body into JSON
-                var result = JSON.parse(body);
-                var path = response.request.uri.pathname;
-                var code = path.substring(path.lastIndexOf('/') + 1, path.length);
+            request({
+				url: urls[i].url,
+				method: 'GET',
+				headers: {'accept': 'application/json'}},
+				function(error, response, body) {
+	                // Lets convert the body into JSON
+	                var result = JSON.parse(body);
+	                var path = response.request.uri.pathname;
+	                var code = path.substring(path.lastIndexOf('/') + 1, path.length);
 
-                var faaResult = {
-                            code:       code,
-                            type:       '',
-                            message:    '',
-                            weather:    ''
-                            };
+	                var faaResult = {
+	                            code:       code,
+	                            type:       '',
+	                            message:    '',
+	                            weather:    ''
+	                            };
 
-                // Check to see if we are error free and got an OK response
-                if (!error && response.statusCode == 200) {
+	                // Check to see if we are error free and got an OK response
+	                if (!error && response.statusCode == 200) {
 
-                    // Is there a delay at the airport?
-                    if (result.delay  == 'true') {
+	                    // Is there a delay at the airport?
+	                    if (result.delay  == 'true') {
 
-                        // Figure out the type of delay and craft the response accordingly
-                        faaResult.type = result.status.type;
+	                        // Figure out the type of delay and craft the response accordingly
+	                        faaResult.type = result.status.type;
 
-                        switch (faaResult.type) {
-                            case 'Airport Closure':
-                                faaResult.message = 'Airport closed due to ' + result.status.reason + ', expected reopening ' + result.status.closureEnd + '.';
-                                break;
-                            case 'Ground Stop':
-                                faaResult.message = 'Ground stoppage due to ' + result.status.reason + ', expected end is ' +  result.status.endTime + '.';
-                                break;
-                            case 'Ground Delay':
-                                faaResult.message = 'Ground delay due to ' + result.status.reason + ', average delay is ' +  result.status.avgDelay + '.';
-                                break;
-                            default:
-                                faaResult.message = 'Delay due to ' + result.status.reason + ', delays are from ' +  result.status.minDelay + ' to ' +  result.status.maxDelay + ', and ' + result.status.trend + '.';
-                                break;
-                            }
-                    } else {
-                        faaResult.type = 'Ok';
-                        faaResult.message = result.status.reason;
-                        }
+	                        switch (faaResult.type) {
+	                            case 'Airport Closure':
+	                                faaResult.message = 'Airport closed due to ' + result.status.reason + ', expected reopening ' + result.status.closureEnd + '.';
+	                                break;
+	                            case 'Ground Stop':
+	                                faaResult.message = 'Ground stoppage due to ' + result.status.reason + ', expected end is ' +  result.status.endTime + '.';
+	                                break;
+	                            case 'Ground Delay':
+	                                faaResult.message = 'Ground delay due to ' + result.status.reason + ', average delay is ' +  result.status.avgDelay + '.';
+	                                break;
+	                            default:
+	                                faaResult.message = 'Delay due to ' + result.status.reason + ', delays are from ' +  result.status.minDelay + ' to ' +  result.status.maxDelay + ', and ' + result.status.trend + '.';
+	                                break;
+	                            }
+	                    } else {
+	                        faaResult.type = 'Ok';
+	                        faaResult.message = result.status.reason;
+	                        }
 
-                    // Now let's get the weather at the airport
-                    faaResult.weather = result.weather.weather + ', temp ' + result.weather.temp + ', wind ' + result.weather.wind + ', visibility ' + result.weather.visibility + '.';
+	                    // Now let's get the weather at the airport
+	                    faaResult.weather = result.weather.weather + ', temp ' + result.weather.temp + ', wind ' + result.weather.wind + ', visibility ' + result.weather.visibility + '.';
 
-                } else if (error && response.statusCode == 502) {
-                    // If we get an error and a 502 it's what the FAA use to indicate thier system is down.
-                    faaResult.type = 'No Data';
-                    faaResult.message = 'FAA system down.';
-                    faaResult.weather = 'No weather data.';
-                } else {
-                    // In all other cases it's some other error
-                    faaResult.type = 'Error';
-                    faaResult.message = 'Error requesting data.';
-                    faaResult.weather = 'No weather data.';
-                    }
+	                } else if (error && response.statusCode == 502) {
+	                    // If we get an error and a 502 it's what the FAA use to indicate thier system is down.
+	                    faaResult.type = 'No Data';
+	                    faaResult.message = 'FAA system down.';
+	                    faaResult.weather = 'No weather data.';
+	                } else {
+	                    // In all other cases it's some other error
+	                    faaResult.type = 'Error';
+	                    faaResult.message = 'Error requesting data.';
+	                    faaResult.weather = 'No weather data.';
+	                    }
 
-                results.push(faaResult);
-                that.count++;
+	                results.push(faaResult);
+	                that.count++;
 
-                if (that.count === urls.length)
-                    {
-                    // We have the responses figured out so lets fire off the notifiction
-                    that.sendSocketNotification('GOT-FAA-DATA', results);
-                    }
+	                if (that.count === urls.length)
+	                    {
+	                    // We have the responses figured out so lets fire off the notifiction
+	                    that.sendSocketNotification('GOT-FAA-DATA', results);
+	                    }
                 });
             }
         },

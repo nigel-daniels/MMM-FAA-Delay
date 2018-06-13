@@ -24,7 +24,8 @@ Module.register('MMM-FAA-Delay', {
         this.urls = [];
 
         for (i in this.config.airports) {
-            this.urls.push({code: this.config.airports[i], url: 'http://services.faa.gov/airport/status/' + this.config.airports[i] + '?format=application/json'});
+            //this.urls.push({code: this.config.airports[i], url: 'http://services.faa.gov/airport/status/' + this.config.airports[i] + '?format=application/json'});
+			this.urls.push({code: this.config.airports[i], url: 'https://soa.smext.faa.gov/asws/api/airport/status/' + this.config.airports[i]});
             }
 
         this.results = [];
