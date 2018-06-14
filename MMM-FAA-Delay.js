@@ -8,7 +8,8 @@
 Module.register('MMM-FAA-Delay', {
 
     defaults: {
-            interval:   900000  // 15 minutes
+            interval:   	900000,  	// 15 minutes
+			showWeather: 	true		// Display the weather for the airports
         },
 
 
@@ -83,6 +84,7 @@ Module.register('MMM-FAA-Delay', {
 
                 messageRow.appendChild(blank1);
                 messageRow.appendChild(airportMessage);
+				
                 // Set up the last row with weather data
                 weatherRow = document.createElement("tr");
 
@@ -97,7 +99,7 @@ Module.register('MMM-FAA-Delay', {
                 // Add the rows to the table
                 wrapper.appendChild(airportRow);
                 wrapper.appendChild(messageRow);
-                wrapper.appendChild(weatherRow);
+                if (this.config.showWeather) {wrapper.appendChild(weatherRow);}
                 }
         } else {
             // Otherwise lets just use a simple div

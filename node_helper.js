@@ -49,29 +49,29 @@ module.exports = NodeHelper.create({
 	                    if (result.Delay  == 'true') {
 
 	                        // Figure out the type of delay and craft the response accordingly
-	                        faaResult.type = result.Status.Type;
+	                        faaResult.type = result.Status[0].Type;
 
 	                        switch (faaResult.type) {
 	                            case 'Airport Closure':
-	                                faaResult.message = 'Airport closed due to ' + result.Status.Reason + ', expected reopening ' + result.status.closureEnd + '.';
+	                                faaResult.message = 'Airport closed due to ' + result.Status[0].Reason + ', expected reopening ' + result.Status[0].ClosureEnd + '.';
 	                                break;
 	                            case 'Ground Stop':
-	                                faaResult.message = 'Ground stoppage due to ' + result.Status.Reason + ', expected end is ' +  result.status.endTime + '.';
+	                                faaResult.message = 'Ground stoppage due to ' + result.Status[0].Reason + ', expected end is ' +  result.Status[0].EndTime + '.';
 	                                break;
 	                            case 'Ground Delay':
-	                                faaResult.message = 'Ground delay due to ' + result.Status.Reason + ', average delay is ' +  result.status.avgDelay + '.';
+	                                faaResult.message = 'Ground delay due to ' + result.Status[0].Reason + ', average delay is ' +  result.Status[0].AvgDelay + '.';
 	                                break;
 	                            default:
-	                                faaResult.message = 'Delay due to ' + result.Status.Reason + ', delays are from ' +  result.status.minDelay + ' to ' +  result.status.maxDelay + ', and ' + result.status.trend + '.';
+	                                faaResult.message = 'Delay due to ' + result.Status[0].Reason + ', delays are from ' +  result.Status[0].MinDelay + ' to ' +  result.Status[0].MaxDelay + ', and ' + result.Status[0].Trend + '.';
 	                                break;
 	                            }
 	                    } else {
 	                        faaResult.Type = 'Ok';
-	                        faaResult.message = result.Status.Reason;
+	                        faaResult.message = result.Status[0].Reason;
 	                        }
 
 	                    // Now let's get the weather at the airport
-	                    faaResult.weather = result.Weather.Weather + ', temp ' + result.Weather.Temp + ', wind ' + result.Weather.Wind + ', visibility ' + result.Weather.Visibility + '.';
+	                    faaResult.weather = result.Weather.Weather[0].Temp[0] + ', temp ' + result.Weather.Temp + ', wind ' + result.Weather.Wind + ', visibility ' + result.Weather.Visibility + '.';
 
 	                } else if (error && response.statusCode == 502) {
 	                    // If we get an error and a 502 it's what the FAA use to indicate thier system is down.
