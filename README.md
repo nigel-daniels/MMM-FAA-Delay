@@ -1,4 +1,6 @@
 # MMM-FAA-Delay
+![FAA delay](airport-delays.png "FAA delay.")
+
 This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror/tree/develop).  This module shows FAA published delays at major US airports.
 
 ## Installation
