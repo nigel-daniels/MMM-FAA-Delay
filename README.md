@@ -13,7 +13,7 @@ The entry in `config.js` can include the following options:
 |Option|Description|
 |---|---|
 |`interval`|How often the traffic is updated.<br><br>**Type:** `integer`<br>**Default value:** `900000 // 15 minutes`|
-|`airports`|**Required** This is a list of airports you want to monitor for delays.  Use the airports International Air Transport Association (IATA) code.  The FAA supported IATA codes can be found here: http://www.fly.faa.gov/flyfaa/usmap.jsp<br><br>**Type:** `string`|
+|`airports`|**Required** This is a list of airports you want to monitor for delays.  Use the airports International Air Transport Association (IATA) code.  The FAA supported IATA codes can be found [here](https://app.swaggerhub.com/apis/FAA/ASWS/1.1.0)<br><br>**Type:** `string`|
 |`showWeather`| Display the weather for that airport.  This may not be needed if you live close by.<br><br>**Type:** `boolean`<br>**Default value:** `true // Display the weather`
 
 Here is an example of an entry in `config.js`

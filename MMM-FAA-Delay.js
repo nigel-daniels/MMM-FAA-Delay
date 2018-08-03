@@ -41,10 +41,10 @@ Module.register('MMM-FAA-Delay', {
         },
 
 
-    getAirportData: function(that) {
+    getAirportData: function(_this) {
         // Make the initial request to the helper then set up the timer to perform the updates
-        that.sendSocketNotification('GET-FAA-DATA', that.urls);
-        setTimeout(that.getAirportData, that.config.interval, that);
+        _this.sendSocketNotification('GET-FAA-DATA', _this.urls);
+        setTimeout(_this.getAirportData, _this.config.interval, _this);
         },
 
 
@@ -84,7 +84,7 @@ Module.register('MMM-FAA-Delay', {
 
                 messageRow.appendChild(blank1);
                 messageRow.appendChild(airportMessage);
-				
+
                 // Set up the last row with weather data
                 weatherRow = document.createElement("tr");
 

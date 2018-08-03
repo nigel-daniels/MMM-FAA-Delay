@@ -21,7 +21,7 @@ module.exports = NodeHelper.create({
         var results = [];
         this.count = 0;
 
-        var that = this;
+        var _this = this;
 
         for (var i = 0; i < urls.length; i++)
             {
@@ -32,11 +32,11 @@ module.exports = NodeHelper.create({
 				function(error, response, body) {
 	                // Lets convert the body into JSON
 	                var result = JSON.parse(body);
-	                var path = response.request.uri.pathname;
-	                var code = path.substring(path.lastIndexOf('/') + 1, path.length);
+	                //var path = response.request.uri.pathname;
+	                //var code = path.substring(path.lastIndexOf('/') + 1, path.length);
 
 	                var faaResult = {
-	                            code:       code,
+	                            code:       '???',
 	                            type:       '',
 	                            message:    '',
 	                            weather:    ''
@@ -44,16 +44,17 @@ module.exports = NodeHelper.create({
 
 	                // Check to see if we are error free and got an OK response
 	                if (!error && response.statusCode == 200) {
+						faaResult.code = result.IATA;
 
 	                    // Is there a delay at the airport?
-	                    if (result.Delay  == 'true') {
+	                    if (result.Delay) {
 
 	                        // Figure out the type of delay and craft the response accordingly
-	                        faaResult.type = result.Status[0].Type;
+	                        faaResult.type = result.Status[0].Type  === undefined ? 'Delay' : result.Status[0].Type;
 
 	                        switch (faaResult.type) {
 	                            case 'Airport Closure':
-	                                faaResult.message = 'Airport closed due to ' + result.Status[0].Reason + ', expected reopening ' + result.Status[0].ClosureEnd + '.';
+	                                faaResult.message = 'Airport closed due to ' + result.Status[0].Reason + ', expected reopening ' + result.Status[0].Reopen + '.';
 	                                break;
 	                            case 'Ground Stop':
 	                                faaResult.message = 'Ground stoppage due to ' + result.Status[0].Reason + ', expected end is ' +  result.Status[0].EndTime + '.';
@@ -61,17 +62,20 @@ module.exports = NodeHelper.create({
 	                            case 'Ground Delay':
 	                                faaResult.message = 'Ground delay due to ' + result.Status[0].Reason + ', average delay is ' +  result.Status[0].AvgDelay + '.';
 	                                break;
+								case 'Delay':
+									faaResult.message = 'Delay is due to ' + result.Status[0].Reason + '.';
+									break;
 	                            default:
 	                                faaResult.message = 'Delay due to ' + result.Status[0].Reason + ', delays are from ' +  result.Status[0].MinDelay + ' to ' +  result.Status[0].MaxDelay + ', and ' + result.Status[0].Trend + '.';
 	                                break;
 	                            }
 	                    } else {
-	                        faaResult.Type = 'Ok';
+	                        faaResult.type = 'Ok';
 	                        faaResult.message = result.Status[0].Reason;
 	                        }
 
 	                    // Now let's get the weather at the airport
-	                    faaResult.weather = result.Weather.Weather[0].Temp[0] + ', temp ' + result.Weather.Temp + ', wind ' + result.Weather.Wind + ', visibility ' + result.Weather.Visibility + '.';
+	                    faaResult.weather = result.Weather.Weather + ', temp ' + result.Weather.Temp + ', wind ' + result.Weather.Wind + ', visibility ' + result.Weather.Visibility + '.';
 
 	                } else if (error && response.statusCode == 502) {
 	                    // If we get an error and a 502 it's what the FAA use to indicate thier system is down.
@@ -86,12 +90,12 @@ module.exports = NodeHelper.create({
 	                    }
 
 	                results.push(faaResult);
-	                that.count++;
+	                _this.count++;
 
-	                if (that.count === urls.length)
+	                if (_this.count === urls.length)
 	                    {
 	                    // We have the responses figured out so lets fire off the notifiction
-	                    that.sendSocketNotification('GOT-FAA-DATA', results);
+	                    _this.sendSocketNotification('GOT-FAA-DATA', results);
 	                    }
                 });
             }
