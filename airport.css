@@ -1,6 +1,6 @@
 /* Magic Mirror Module: MMM-FAA-Delay css
  * Version: 1.0.0
- * 
+ *
  * By Nigel Daniels https://github.com/nigel-daniels/
  * MIT Licensed.
  */
@@ -10,9 +10,11 @@
 }
 
 .airport .message {
+    font-size: 16px;
     max-width: 400px;
 }
 
 .airport .weather {
+    font-size: 16px;
     max-width: 400px;
 }
