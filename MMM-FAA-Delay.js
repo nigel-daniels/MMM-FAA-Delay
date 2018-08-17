@@ -16,10 +16,6 @@ Module.register('MMM-FAA-Delay', {
     start:  function() {
         Log.log('Starting module: ' + this.name);
 
-        if (this.data.classes === 'MMM-FAA-Delay') {
-            this.data.classes = 'bright medium';
-            }
-
         // Set up the local values, here we construct the request url to use
         this.loaded = false;
         this.urls = [];
@@ -55,7 +51,7 @@ Module.register('MMM-FAA-Delay', {
         // If we have some data to display then build the results table
         if (this.loaded) {
             wrapper = document.createElement("table");
-		    wrapper.className = "airport small";
+		    wrapper.className = "airport bright small";
 
             for (i in this.results)
                 {
