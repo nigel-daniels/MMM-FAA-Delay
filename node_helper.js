@@ -75,7 +75,7 @@ module.exports = NodeHelper.create({
 	                        }
 
 	                    // Now let's get the weather at the airport
-	                    faaResult.weather = result.Weather.Weather + ', temp ' + result.Weather.Temp + ', wind ' + result.Weather.Wind + ', visibility ' + result.Weather.Visibility + '.';
+	                    faaResult.weather = result.Weather.Weather[0].Temp[0] + ', temp ' + result.Weather.Temp + ', wind ' + result.Weather.Wind + ', visibility ' + result.Weather.Visibility + '.';
 
 	                } else if (error && response.statusCode == 502) {
 	                    // If we get an error and a 502 it's what the FAA use to indicate thier system is down.
